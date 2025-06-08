@@ -1,17 +1,25 @@
 {
-    "carnet": {
+    "carnet fondo blanco": {
         "width":4,
         "height": 4,
         "percentage": 60,
-        "bg-color": "#87CEEB",
+        "bg-color": "#FFFFFF",
+        "dpi": 300,
+        "unit": "cm"
+    },
+    "carnet fondo celeste": {
+        "width":4,
+        "height": 4,
+        "percentage": 60,
+        "bg-color": "#87CDEB",
         "dpi": 300,
         "unit": "cm"
     },
     "Pasaporte USA": {
         "width": 2,
         "height": 2,
-        "percentage": 70,
-        "bg-color": "#ffffff",
+        "percentage": 65,
+        "bg-color": "#FFFFFF",
         "dpi": 300,
         "unit": "inch"
     },
@@ -19,7 +27,7 @@
         "width": 5,
         "height": 5,
         "percentage": 70,
-        "bg-color": "#ffffff",
+        "bg-color": "#FFFFFF",
         "dpi": 300,
         "unit": "cm"
     },
@@ -27,7 +35,7 @@
         "width": 3.5,
         "height": 4,
         "percentage": 70,
-        "bg-color": "#ffffff",
+        "bg-color": "#FFFFFF",
         "dpi": 300,
         "unit": "cm"
     }

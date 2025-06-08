@@ -5,6 +5,7 @@ const formZone = document.getElementById("form-zone");
 const submitButton = document.getElementById("submit");
 const API_URL = window.CONFIG.API_URL || "http://localhost:5000"; // Cambia esto según tu entorno
 let selectedFile = null;
+let selectedBgColor = null;
 
 // Estado de validación
 const validationState = {
@@ -67,14 +68,14 @@ async function handleImage(file) {
   const height = document.getElementById("height").value;
   const dpi = document.getElementById("dpi").value;
   const percentage = document.getElementById("percentage").value;
-  const bgColor = document.getElementById("bg-color").value;
+ 
   // Agregar datos del formulario a formData
   formData.append("unit", unit);
   formData.append("width", width);
   formData.append("height", height);
   formData.append("dpi", dpi);
   formData.append("percentage", percentage);
-  formData.append("bg-color", bgColor);
+  formData.append("bg-color", selectedBgColor);
   formData.append("image", file);
   
   try {
@@ -130,24 +131,6 @@ function validateInteger(input, min, max) {
   }
 }
 
-// Función para validar el color de fondo
-function validateColor(input) {
-  // Regex para validar formato de color hexadecimal (#RRGGBB o #RGB)
-  const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-  const isValid = hexColorRegex.test(input.value);
-  
-  if (isValid) {
-      input.classList.remove('is-invalid');
-      input.classList.add('is-valid');
-      validationState.bgColor = true;
-  } else {
-      input.classList.remove('is-valid');
-      input.classList.add('is-invalid');
-      validationState.bgColor = false;
-  }
-  validateForm();
-}
-
 // Función para validar el formulario
 function validateForm() {
   const isFormValid = Object.values(validationState).every(
@@ -156,21 +139,43 @@ function validateForm() {
   submitButton.disabled = !isFormValid;
   return isFormValid;
 }
+// Obtener elementos del DOM
 const widthInput = document.getElementById("width");
 const heightInput = document.getElementById("height");
 const dpiInput = document.getElementById("dpi");
 const percentageInput = document.getElementById("percentage");
-const bgColorInput = document.getElementById("bg-color");
+
 // Event listeners para validar mientras se escribe
 widthInput.addEventListener("input",() => validateDecimal(widthInput, 1, 10));
 heightInput.addEventListener("input",() => validateDecimal(heightInput, 1, 10));
-dpiInput.addEventListener("input",() => validateInteger(dpiInput, 72, 600));
-percentageInput.addEventListener("input",() => validateInteger(percentageInput, 1, 100));
-bgColorInput.addEventListener("input",validateColor(bgColorInput));
+dpiInput.addEventListener("input",() => validateInteger(dpiInput, 150, 600));
+percentageInput.addEventListener("input",() => validateInteger(percentageInput, 50, 100));
+
 // Seleccionar color de fondo predefinido
 function selectBgColor(bgColor) {
-  bgColorInput.value = bgColor;
-  validateColor(bgColorInput);
+  console.log(`Seleccionando color de fondo: ${bgColor}`);
+
+  // Remover la clase 'selected' de todos los botones
+  document.querySelectorAll('.color-option').forEach(button => {
+    button.classList.remove('selected');
+  });
+  
+  // Buscar el botón por el color de fondo en lugar del onclick
+  const clickedButton = document.querySelector(`.color-option[style*="background-color:${bgColor}"]`);
+  console.log(`Botón seleccionado: ${clickedButton}`);
+  
+  if (clickedButton) {
+    clickedButton.classList.add('selected');
+  }
+  
+  // Actualizar el color seleccionado
+  selectedBgColor = bgColor;
+  
+  // Validar que se ha seleccionado un color
+  validationState.bgColor = true;
+  
+  // Validar el formulario completo
+  validateForm();
 }
 
 // Agregar eventos de cambio a los campos del formulario para validar
@@ -212,12 +217,14 @@ function showLoadingAnimation() {
 document.getElementById("templates").addEventListener("change", (e) => {
   const select = e.target;
   const selectedOption = select.options[select.selectedIndex];
+  
   // Actualizar los valores de los campos del formulario con los datos del template seleccionado
   document.getElementById("width").value = selectedOption.dataset.width;
   document.getElementById("height").value = selectedOption.dataset.height;
   document.getElementById("percentage").value = selectedOption.dataset.percentage;
   document.getElementById("dpi").value = selectedOption.dataset.dpi;
-  document.getElementById("bg-color").value = selectedOption.dataset.bgColor;
+  selectBgColor(selectedOption.dataset.bgColor);
+  
   // Validar todos los campos para actualizar el estado
   validateDecimal(widthInput, 1, 10);
   validateDecimal(heightInput, 1, 10);
